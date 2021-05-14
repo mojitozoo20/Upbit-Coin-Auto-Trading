@@ -118,7 +118,7 @@ def short_trading_for_1percent(df):
             ay_ror.append(acc_ror)
             # 0.01 - (수수료 0.001 + 슬리피지 0.004)
 
-    view_chart(df, ax_ror, ay_ror, cond_buy)
+    #view_chart(df, ax_ror, ay_ror, cond_buy)
 
     return acc_ror
 
@@ -128,8 +128,8 @@ for ticker in ["KRW-DOGE", "KRW-ETH", "KRW-EOS", "KRW-ETC", "KRW-XRP", "KRW-ADA"
     df.to_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx")
     print(f'{ticker} 엑셀 데이터 변환 완료..')
 '''
-#for ticker in ["KRW-DOGE", "KRW-ETH", "KRW-EOS", "KRW-ETC", "KRW-XRP", "KRW-ADA", "KRW-BTC", "KRW-BCH", "KRW-QTUM", "KRW-DOT", "KRW-BTT", "KRW-HBAR", "KRW-VET"]:
-for ticker in ["KRW-BTC"]:
+for ticker in ["KRW-DOGE", "KRW-ETH", "KRW-EOS", "KRW-ETC", "KRW-XRP", "KRW-ADA", "KRW-BTC", "KRW-BCH", "KRW-QTUM", "KRW-DOT", "KRW-BTT", "KRW-HBAR", "KRW-VET"]:
+#for ticker in ["KRW-BTC"]:
     df = pd.read_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx", index_col=0)
     ror = short_trading_for_1percent(df)
     period_profit = df.iloc[-1, 3] / df.iloc[0, 0]
