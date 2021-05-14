@@ -5,7 +5,7 @@ import pyupbit
 import datetime
 from collections import deque
 TICKER = "KRW-EOS"
-CASH = 70000
+CASH = 80000
 
 class Consumer(threading.Thread):
     def __init__(self, q):
@@ -121,12 +121,13 @@ class Consumer(threading.Thread):
                         while True:
                             volume = upbit.get_balance(self.ticker)
                             if volume == 0:
-                                print("<< 손절 주문(-5%)이 완료되었습니다 >>")
+                                print("<< 손절 주문(-10%)이 완료되었습니다 >>")
+                                cash = CASH * 0.9
                                 hold_flag = False
                                 wait_flag = True
                                 break
                             else:
-                                print("손절 주문(-5%) 대기중...")
+                                print("손절 주문(-10%) 대기중...")
                                 time.sleep(0.5)
                     elif uncomp != None and len(uncomp) == 0:
                         #cash = upbit.get_balance()

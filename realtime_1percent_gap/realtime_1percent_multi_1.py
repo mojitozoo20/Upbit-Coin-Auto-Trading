@@ -4,7 +4,8 @@ import time
 import pyupbit
 import datetime
 from collections import deque
-TICKER = "KRW-EOS"
+TICKER = "KRW-ETC"
+CASH = 80000
 
 class Consumer(threading.Thread):
     def __init__(self, q):
@@ -34,7 +35,8 @@ class Consumer(threading.Thread):
             secret = f.readline().strip()
 
         upbit = pyupbit.Upbit(access, secret)
-        cash  = upbit.get_balance()  # 2개 이상 종목 돌릴 시 모든 cash 코드 임의 설정
+        #cash  = upbit.get_balance()  # 2개 이상 종목 돌릴 시 모든 cash 코드 임의 설정
+        cash = CASH
         print("보유현금:", cash)
 
         i = 0
@@ -100,7 +102,8 @@ class Consumer(threading.Thread):
                             hold_flag = True
                             break
                     
-                    cash = upbit.get_balance()
+                    #cash = upbit.get_balance()
+                    cash = CASH - (price_buy * volume)
                     if cash == None:
                         continue
 
@@ -119,9 +122,7 @@ class Consumer(threading.Thread):
                             volume = upbit.get_balance(self.ticker)
                             if volume == 0:
                                 print("<< 손절 주문(-10%)이 완료되었습니다 >>")
-                                cash = upbit.get_balance()
-                                if cash == None:
-                                    continue
+                                cash = CASH * 0.9
                                 hold_flag = False
                                 wait_flag = True
                                 break
@@ -129,7 +130,8 @@ class Consumer(threading.Thread):
                                 print("손절 주문(-10%) 대기중...")
                                 time.sleep(0.5)
                     elif uncomp != None and len(uncomp) == 0:
-                        cash = upbit.get_balance()
+                        #cash = upbit.get_balance()
+                        cash = CASH * 1.01
                         if cash == None:
                             continue
                         print("<< 지정가 매도가 체결되었습니다 >>")

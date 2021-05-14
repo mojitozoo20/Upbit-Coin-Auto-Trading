@@ -72,6 +72,8 @@ def short_trading_for_1percent(df):
         cond = target['high'] >= df.loc[buy_date, 'open'] * 1.015  # 1.5% 상승시 매도
         sell_candidate = target.index[cond]
 
+        buy_price = df.loc[buy_date, 'open'] * 1.005
+
         if len(sell_candidate) == 0:  # 마지막 지점 브레이크
             sell_price = df.iloc[-1, 3]
             if (sell_price / buy_price) <= 0.9:  # 10% 하락시 손절가로 설정
@@ -90,8 +92,6 @@ def short_trading_for_1percent(df):
                 stop_loss = target.loc[ : sell_candidate[0] ].iloc[0, 2]
             if d == len(target.loc[ : sell_candidate[0] ]) - 1:
                 break
-
-        buy_price = df.loc[buy_date, 'open'] * 1.005
         
         if (stop_loss / buy_price) <= 0.9:  # 10% 하락시 손절
             sell_date = sell_candidate[0]
@@ -100,7 +100,6 @@ def short_trading_for_1percent(df):
             ay_ror.append(acc_ror)
             continue
 
-        i = 0
         if len(sell_candidate) == 0:
             sell_price = df.iloc[-1, 3]
             if (sell_price / buy_price) <= 0.9:  # 10% 하락시 손절가 = 최종거래가
@@ -123,12 +122,12 @@ def short_trading_for_1percent(df):
     return acc_ror
 
 '''
-for ticker in ["KRW-DOGE", "KRW-ETH", "KRW-EOS", "KRW-ETC", "KRW-XRP", "KRW-ADA", "KRW-BTC", "KRW-BCH", "KRW-QTUM", "KRW-DOT", "KRW-BTT", "KRW-HBAR", "KRW-VET"]:
+for ticker in ["KRW-DOGE", "KRW-ETC", "KRW-EOS", "KRW-ETH", "KRW-XRP", "KRW-ADA", "KRW-BCH", "KRW-HBAR", "KRW-QTUM", "KRW-BTT", "KRW-XLM", "KRW-SSX", "KRW-DOT"]:
     df = get_ohlcv(ticker)
     df.to_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx")
     print(f'{ticker} 엑셀 데이터 변환 완료..')
 '''
-for ticker in ["KRW-DOGE", "KRW-ETH", "KRW-EOS", "KRW-ETC", "KRW-XRP", "KRW-ADA", "KRW-BTC", "KRW-BCH", "KRW-QTUM", "KRW-DOT", "KRW-BTT", "KRW-HBAR", "KRW-VET"]:
+for ticker in ["KRW-DOGE", "KRW-ETC", "KRW-EOS", "KRW-ETH", "KRW-XRP", "KRW-ADA", "KRW-BCH", "KRW-HBAR", "KRW-QTUM", "KRW-BTT", "KRW-XLM", "KRW-SSX", "KRW-DOT"]:
 #for ticker in ["KRW-BTC"]:
     df = pd.read_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx", index_col=0)
     ror = short_trading_for_1percent(df)
