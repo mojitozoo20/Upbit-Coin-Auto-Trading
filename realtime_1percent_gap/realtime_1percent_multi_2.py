@@ -142,7 +142,7 @@ class Consumer(threading.Thread):
                 if i == (5 * 10):
                     print(f"[{datetime.datetime.now()}]")
                     print(f"{TICKER} 보유량:{upbit.get_balance_t(self.ticker)}, 보유KRW: {cash},  hold_flag= {hold_flag}, wait_flag= {wait_flag} signal = {curr_ma5 >= curr_ma10 and curr_ma10 >= curr_ma15 and curr_ma15 >= curr_ma50 and curr_ma15 <= curr_ma50 * 1.03}")
-                    print(f"현재: {price_curr}, 매수 목표: {int(price_buy)}, 지정 매도: {price_sell}, 손절 예상: {int(price_buy * 0.95)}")
+                    print(f"현재: {price_curr}, 매수 목표: {int(price_buy)}, 지정 매도: {price_sell}, 손절 예상: {int(price_buy * 0.9)}")
                     i = 0
                 i += 1
             except:
