@@ -69,11 +69,14 @@ class Consumer(threading.Thread):
                     price_curr >= price_buy and curr_ma5 >= curr_ma10 and \
                     curr_ma10 >= curr_ma15 and curr_ma15 >= curr_ma50 and curr_ma15 <= curr_ma50 * 1.03:
                     # 0.05%
-                    ret = upbit.buy_market_order(self.ticker, cash * 0.9995)
-                    print("매수 주문", ret)
-                    if ret == None or "error" in ret:
-                        print("<< 매수 주문 Error >>")
-                        continue
+                    while True:
+                        ret = upbit.buy_market_order(self.ticker, cash * 0.9995)
+                        if ret == None or "error" in ret:
+                            print("<< 매수 주문 Error >>")
+                            time.sleep(0.5)
+                            continue
+                        print("매수 주문", ret)
+                        break
 
                     while True:
                         order = upbit.get_order(ret['uuid'])
@@ -104,8 +107,6 @@ class Consumer(threading.Thread):
                     
                     #cash = upbit.get_balance()
                     cash = CASH - (price_buy * volume)
-                    if cash == None:
-                        continue
 
                 if hold_flag == True:
                     uncomp = upbit.get_order(self.ticker)
