@@ -163,7 +163,7 @@ print(f'환영합니다 -- Upbit Auto Trading -- [{now.year}-{now.month}-{now.da
 print('트레이딩 대기중...')
 while True:
     now = datetime.datetime.now()
-    if now.second == 2:  # 대기 후 2초에 시작
+    if now.second == 1:  # 대기 후 1초에 시작
         q = queue.Queue()
         Producer(q).start()
         Consumer(q).start()
