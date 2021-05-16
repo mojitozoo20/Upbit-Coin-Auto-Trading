@@ -9,7 +9,7 @@ count_stop_loss = 0  # 손절 횟수
 def get_ohlcv(ticker):
     dfs = [ ]
     # df = pyupbit.get_ohlcv(ticker, interval="minute1", to="20210423 11:00:00")
-    df = pyupbit.get_ohlcv(ticker, interval="minute1", to="20210515 23:00:00")
+    df = pyupbit.get_ohlcv(ticker, interval="minute1", to="20210516 22:00:00")
     dfs.append(df)
 
     for i in range(60):
@@ -128,12 +128,12 @@ def short_trading_for_1percent(df):
     return acc_ror
 
 '''
-for ticker in ["KRW-DOGE", "KRW-ETC", "KRW-XRP", "KRW-ADA", "KRW-EOS", "KRW-DOT", "KRW-XLM", "KRW-CHZ", "KRW-BCH", "KRW-QTUM", "KRW-SSX", "KRW-BTT", "KRW-SNT", "KRW-LTC"]:
+for ticker in ["KRW-XRP", "KRW-ADA", "KRW-DOGE", "KRW-ETC", "KRW-EOS", "KRW-ETH", "KRW-XLM", "KRW-DOT", "KRW-BCH", "KRW-QTUM", "KRW-EDR", "KRW-BTT", "KRW-CHZ", "KRW-SNT"]:
     df = get_ohlcv(ticker)
     df.to_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx")
     print(f'{ticker} 엑셀 데이터 변환 완료..')
 '''
-for ticker in ["KRW-DOGE", "KRW-ETC", "KRW-XRP", "KRW-ADA", "KRW-EOS", "KRW-DOT", "KRW-XLM", "KRW-CHZ", "KRW-BCH", "KRW-QTUM", "KRW-SSX", "KRW-BTT", "KRW-SNT", "KRW-LTC"]:
+for ticker in ["KRW-XRP", "KRW-ADA", "KRW-DOGE", "KRW-ETC", "KRW-EOS", "KRW-ETH", "KRW-XLM", "KRW-DOT", "KRW-BCH", "KRW-QTUM", "KRW-EDR", "KRW-BTT", "KRW-CHZ", "KRW-SNT"]:
 #for ticker in ["KRW-BTC"]:
     df = pd.read_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx", index_col=0)
     ror = short_trading_for_1percent(df)
