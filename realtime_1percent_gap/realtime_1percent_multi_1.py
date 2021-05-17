@@ -5,7 +5,7 @@ import pyupbit
 import datetime
 from collections import deque
 TICKER = "KRW-ADA"
-CASH = 80000
+CASH = 70000
 
 class Consumer(threading.Thread):
     def __init__(self, q):
@@ -116,7 +116,7 @@ class Consumer(threading.Thread):
                 if hold_flag == True:
                     uncomp = upbit.get_order(self.ticker)
 
-                    if (price_curr / price_buy) <= 0.95:  # 5% 하락시 손절 매도
+                    if (price_curr / price_buy) <= 0.99:  # 1% 하락시 손절 매도
                         while True:
                             upbit.cancel_order(uncomp[0]['uuid'])
                             if len(upbit.get_order(self.ticker)) == 0:
@@ -127,13 +127,13 @@ class Consumer(threading.Thread):
                         while True:
                             volume = upbit.get_balance(self.ticker)
                             if volume == 0:
-                                print("<< 손절 주문(-5%)이 완료되었습니다 >>")
-                                cash += CASH * 0.95
+                                print("<< 손절 주문(-1%)이 완료되었습니다 >>")
+                                cash += CASH * 0.99
                                 hold_flag = False
                                 wait_flag = True
                                 break
                             else:
-                                print("손절 주문(-5%) 대기중...")
+                                print("손절 주문(-1%) 대기중...")
                                 time.sleep(0.5)
                     elif uncomp != None and len(uncomp) == 0:
                         #cash = upbit.get_balance()
