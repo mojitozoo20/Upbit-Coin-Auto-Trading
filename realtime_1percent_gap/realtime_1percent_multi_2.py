@@ -128,7 +128,7 @@ class Consumer(threading.Thread):
                             volume = upbit.get_balance(self.ticker)
                             if volume == 0:
                                 print("<< 손절 주문(-5%)이 완료되었습니다 >>")
-                                cash -= CASH * 0.95
+                                cash += CASH * 0.95
                                 hold_flag = False
                                 wait_flag = True
                                 break
