@@ -137,7 +137,7 @@ def short_trading_for_1percent(df):
 
     return acc_ror
 
-'''
+
 for ticker in ["KRW-XRP", "KRW-ADA", "KRW-DOGE", "KRW-ETC", "KRW-EOS", "KRW-ETH", "KRW-XLM", "KRW-DOT", "KRW-BCH", "KRW-QTUM", "KRW-SRM", "KRW-BTT", "KRW-VET", "KRW-SNT"]:
     df = get_ohlcv(ticker)
     df.to_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx")
@@ -149,3 +149,4 @@ for ticker in ["KRW-XRP", "KRW-ADA", "KRW-DOGE", "KRW-ETC", "KRW-EOS", "KRW-ETH"
     ror = short_trading_for_1percent(df)
     period_profit = df.iloc[-1, 3] / df.iloc[0, 0]
     print(ticker, f"초단타시 수익률: {ror:.2f} 단순 보유시 기간 수익률: {period_profit:.2f} 손절 횟수: {count_stop_loss} 거래 횟수: {count_trading}")
+'''
