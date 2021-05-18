@@ -138,12 +138,12 @@ def short_trading_for_1percent(df):
     return acc_ror
 
 '''
-for ticker in ["KRW-XRP", "KRW-DOGE", "KRW-ETC", "KRW-ETH", "KRW-ADA", "KRW-EOS", "KRW-MARO", "KRW-XLM", "KRW-BCH", "KRW-AQT", "KRW-LTC", "KRW-BTT", "KRW-QTUM"]:
+for ticker in ["KRW-XRP", "KRW-DOGE", "KRW-ETC", "KRW-ETH", "KRW-BTC", "KRW-ADA", "KRW-EOS", "KRW-MARO", "KRW-XLM", "KRW-AQT", "KRW-BCH", "KRW-LTC", "KRW-BTT", "KRW-ARK"]:
     df = get_ohlcv(ticker)
     df.to_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx")
     print(f'{ticker} 엑셀 데이터 변환 완료..')
 '''
-for ticker in ["KRW-XRP", "KRW-DOGE", "KRW-ETC", "KRW-ETH", "KRW-ADA", "KRW-EOS", "KRW-MARO", "KRW-XLM", "KRW-BCH", "KRW-AQT", "KRW-LTC", "KRW-BTT", "KRW-QTUM"]:
+for ticker in ["KRW-XRP", "KRW-DOGE", "KRW-ETC", "KRW-ETH", "KRW-BTC", "KRW-ADA", "KRW-EOS", "KRW-MARO", "KRW-XLM", "KRW-AQT", "KRW-BCH", "KRW-LTC", "KRW-BTT", "KRW-ARK"]:
 #for ticker in ["KRW-BTC"]:
     df = pd.read_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx", index_col=0)
     ror = short_trading_for_1percent(df)
