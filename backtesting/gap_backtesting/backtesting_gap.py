@@ -10,7 +10,7 @@ count_trading = 0  # 거래 횟수
 def get_ohlcv(ticker):
     dfs = [ ]
     # df = pyupbit.get_ohlcv(ticker, interval="minute1", to="20210423 11:00:00")
-    df = pyupbit.get_ohlcv(ticker, interval="minute1", to="20210517 23:00:00")
+    df = pyupbit.get_ohlcv(ticker, interval="minute1", to="20210518 23:00:00")
     dfs.append(df)
 
     for i in range(60):
