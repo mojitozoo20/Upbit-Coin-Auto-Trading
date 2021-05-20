@@ -5,7 +5,7 @@ import pyupbit
 import datetime
 from collections import deque
 TICKER = "KRW-ADA"
-CASH = 100000
+CASH = 10000
 
 class Consumer(threading.Thread):
     def __init__(self, q):
