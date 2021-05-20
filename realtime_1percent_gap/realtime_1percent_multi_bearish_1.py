@@ -4,7 +4,7 @@ import time
 import pyupbit
 import datetime
 from collections import deque
-TICKER = "KRW-BCH"
+TICKER = "KRW-ADA"
 CASH = 100000
 
 class Consumer(threading.Thread):
@@ -61,8 +61,8 @@ class Consumer(threading.Thread):
 
                     price_open = self.q.get()
                     if hold_flag == False:
-                        price_buy  = price_open * 1.005
-                        price_sell = price_open * 1.015
+                        price_buy  = price_open
+                        #price_sell = price_open * 1.015
                     wait_flag  = False
 
                 price_curr = pyupbit.get_current_price(self.ticker)
@@ -98,52 +98,28 @@ class Consumer(threading.Thread):
                             break
                         print("보유량 계산중...")
                         time.sleep(0.5)
-
-                    while True:
-                        price_sell = pyupbit.get_tick_size(price_sell)
-                        ret = upbit.sell_limit_order(self.ticker, price_sell, volume)
-                        if ret == None or 'error' in ret:
-                            print("<< 지정가 매도 주문 Error >>")
-                            time.sleep(0.5)
-                        else:
-                            print("<< 지정가 매도주문이 접수되었습니다 >>\n", ret)
-                            hold_flag = True
-                            break
                     
                     #cash = upbit.get_balance()
                     cash -= (price_buy * volume)
 
                 if hold_flag == True:
-                    uncomp = upbit.get_order(self.ticker)
 
-                    if (price_curr / price_buy) <= 0.99:  # 1% 하락시 손절 매도
-                        while True:
-                            upbit.cancel_order(uncomp[0]['uuid'])
-                            if len(upbit.get_order(self.ticker)) == 0:
-                                print("<< 지정가 매도주문이 취소되었습니다 >>\n", ret)
-                                break
-
+                    if (price_curr / price_buy) <= 0.9:  # 10% 하락시 손절 매도 (패닉셀 대처)
                         upbit.sell_market_order(self.ticker, volume)
                         while True:
                             volume = upbit.get_balance(self.ticker)
                             if volume == 0:
-                                print("<< 손절 주문(-1%)이 완료되었습니다 >>")
-                                cash += CASH * 0.987
+                                print("<< 손절 주문(-10%)이 완료되었습니다 >>")
+                                cash += CASH * 0.9
                                 hold_flag = False
                                 wait_flag = True
                                 break
                             else:
-                                print("손절 주문(-1%) 대기중...")
+                                print("손절 주문(-10%) 대기중...")
                                 time.sleep(0.5)
-
+                    
                     elif price_curr < price_buy or curr_ma5 < curr_ma10 or curr_ma10 < curr_ma15 or \
                         curr_ma15 < curr_ma50 or curr_ma50 < curr_ma120:  # 하락장 전환시 손절 매도
-                        while True:
-                            upbit.cancel_order(uncomp[0]['uuid'])
-                            if len(upbit.get_order(self.ticker)) == 0:
-                                print("<< 지정가 매도주문이 취소되었습니다 >>\n", ret)
-                                break
-                        
                         upbit.sell_market_order(self.ticker, volume)
                         while True:
                             volume = upbit.get_balance(self.ticker)
@@ -157,20 +133,11 @@ class Consumer(threading.Thread):
                                 print("손절 주문(하락장 전환) 대기중...")
                                 time.sleep(0.5)
 
-                    elif uncomp != None and len(uncomp) == 0:
-                        #cash = upbit.get_balance()
-                        cash += CASH * 1.01
-                        if cash == None:
-                            continue
-                        print("<< 지정가 매도가 체결되었습니다 >>")
-                        hold_flag = False
-                        wait_flag = True
-
                 # 10 seconds
                 if i == (5 * 10):
                     print(f"[{datetime.datetime.now()}]")
                     print(f"{TICKER} 보유량:{upbit.get_balance_t(self.ticker)}, 보유KRW: {cash},  hold_flag= {hold_flag}, wait_flag= {wait_flag} signal = {curr_ma5 >= curr_ma10 and curr_ma10 >= curr_ma15 and curr_ma15 >= curr_ma50 and curr_ma50 >= curr_ma120 and curr_ma15 <= curr_ma50 * 1.03}")
-                    print(f"현재: {price_curr}, 매수 목표: {int(price_buy)}, 지정 매도: {price_sell}, 손절 예상: {int(price_buy * 0.99)}")
+                    print(f"현재: {price_curr}, 매수 목표: {int(price_buy)}, 손절 예상: {int(price_buy * 0.9)}")
                     i = 0
                 i += 1
             except:

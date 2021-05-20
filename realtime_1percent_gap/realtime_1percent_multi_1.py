@@ -128,16 +128,38 @@ class Consumer(threading.Thread):
                             volume = upbit.get_balance(self.ticker)
                             if volume == 0:
                                 print("<< 손절 주문(-1%)이 완료되었습니다 >>")
-                                cash += CASH * 0.99
+                                cash += CASH * 0.987
                                 hold_flag = False
                                 wait_flag = True
                                 break
                             else:
                                 print("손절 주문(-1%) 대기중...")
                                 time.sleep(0.5)
+                    
+                    elif price_curr < price_buy or curr_ma5 < curr_ma10 or curr_ma10 < curr_ma15 or \
+                        curr_ma15 < curr_ma50 or curr_ma50 < curr_ma120:  # 하락장 전환시 손절 매도
+                        while True:
+                            upbit.cancel_order(uncomp[0]['uuid'])
+                            if len(upbit.get_order(self.ticker)) == 0:
+                                print("<< 지정가 매도주문이 취소되었습니다 >>\n", ret)
+                                break
+                        
+                        upbit.sell_market_order(self.ticker, volume)
+                        while True:
+                            volume = upbit.get_balance(self.ticker)
+                            if volume == 0:
+                                print("<< 손절 주문(하락장 전환)이 완료되었습니다 >>")
+                                cash += CASH * (price_curr / price_buy)
+                                hold_flag = False
+                                wait_flag = True
+                                break
+                            else:
+                                print("손절 주문(하락장 전환) 대기중...")
+                                time.sleep(0.5)
+
                     elif uncomp != None and len(uncomp) == 0:
                         #cash = upbit.get_balance()
-                        cash += CASH * 1.01
+                        cash += CASH * 1.007
                         if cash == None:
                             continue
                         print("<< 지정가 매도가 체결되었습니다 >>")
