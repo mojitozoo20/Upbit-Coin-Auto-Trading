@@ -96,6 +96,7 @@ class Consumer(threading.Thread):
                     while True:
                         volume = upbit.get_balance(self.ticker)
                         if volume != None and volume != 0:
+                            hold_flag = True
                             break
                         print("보유량 계산중...")
                         time.sleep(0.5)
