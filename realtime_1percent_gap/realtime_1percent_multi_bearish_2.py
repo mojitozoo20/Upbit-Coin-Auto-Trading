@@ -139,6 +139,7 @@ class Consumer(threading.Thread):
 
                 if 58<= datetime.datetime.now().second <=59:  # 마감 직전 과거 5봉 갱신
                     past_ma5 = curr_ma5
+                    time.sleep(2)
 
                 # 10 seconds
                 if i == (5 * 10):
