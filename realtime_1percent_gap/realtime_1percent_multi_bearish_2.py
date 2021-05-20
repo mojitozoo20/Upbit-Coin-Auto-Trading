@@ -31,6 +31,7 @@ class Consumer(threading.Thread):
         price_curr = None  # 현재 가격
         hold_flag = False  # 보유 여부
         wait_flag = False  # 대기 여부
+        coin_profit = 0  # 수익률
 
         with open("key/upbit_key.txt", "r") as f:
             access = f.readline().strip()
@@ -109,23 +110,25 @@ class Consumer(threading.Thread):
                         while True:
                             volume = upbit.get_balance(self.ticker)
                             if volume == 0:
-                                print("<< 손절 주문(-10%)이 완료되었습니다 >>")
-                                cash += CASH * 0.9
+                                print("<< 패닉셀 주문(-10%)이 완료되었습니다 >>")
+                                cash += CASH * 0.897
                                 hold_flag = False
                                 wait_flag = True
                                 break
                             else:
-                                print("손절 주문(-10%) 대기중...")
+                                print("패닉셀 주문(-10%) 대기중...")
                                 time.sleep(0.5)
                     
-                    elif price_curr < price_buy or curr_ma5 < curr_ma10 or curr_ma10 < curr_ma15 or \
+                    elif curr_ma5 < curr_ma10 or curr_ma10 < curr_ma15 or \
                         curr_ma15 < curr_ma50 or curr_ma50 < curr_ma120:  # 하락장 전환시 손절 매도
                         upbit.sell_market_order(self.ticker, volume)
                         while True:
                             volume = upbit.get_balance(self.ticker)
                             if volume == 0:
                                 print("<< 손절 주문(하락장 전환)이 완료되었습니다 >>")
-                                cash += CASH * (price_curr / price_buy)
+                                coin_profit += (price_curr / price_buy) * 0.997
+                                print(f"수익률: {coin_profit}")
+                                cash += CASH * ((price_curr / price_buy) * 0.997)
                                 hold_flag = False
                                 wait_flag = True
                                 break
@@ -137,7 +140,7 @@ class Consumer(threading.Thread):
                 if i == (5 * 10):
                     print(f"[{datetime.datetime.now()}]")
                     print(f"{TICKER} 보유량:{upbit.get_balance_t(self.ticker)}, 보유KRW: {cash},  hold_flag= {hold_flag}, wait_flag= {wait_flag} signal = {curr_ma5 >= curr_ma10 and curr_ma10 >= curr_ma15 and curr_ma15 >= curr_ma50 and curr_ma50 >= curr_ma120 and curr_ma15 <= curr_ma50 * 1.03}")
-                    print(f"현재: {price_curr}, 매수 목표: {int(price_buy)}, 손절 예상: {int(price_buy * 0.9)}")
+                    print(f"현재: {price_curr}, 매수 목표: {int(price_buy)}, 누적 수익률: {coin_profit}, 패닉셀 예상가: {int(price_buy * 0.9)}")
                     i = 0
                 i += 1
             except:
