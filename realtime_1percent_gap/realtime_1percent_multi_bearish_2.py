@@ -120,8 +120,7 @@ class Consumer(threading.Thread):
                                 print("패닉셀 주문(-10%) 대기중...")
                                 time.sleep(0.5)
                     
-                    elif curr_ma5 < curr_ma10 or curr_ma10 < curr_ma15 or \
-                        curr_ma15 < curr_ma50 or curr_ma50 < curr_ma120:  # 하락장 전환시 손절 매도
+                    elif curr_ma5 < curr_ma15 and curr_ma10 < curr_ma15:  # 하락장 전환시 손절 매도
                         upbit.sell_market_order(self.ticker, volume)
                         while True:
                             volume = upbit.get_balance(self.ticker)
