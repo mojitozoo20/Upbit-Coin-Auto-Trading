@@ -5,7 +5,7 @@ import pyupbit
 import datetime
 from collections import deque
 TICKER = "KRW-ADA"
-CASH = 100000
+CASH = 90000
 
 class Consumer(threading.Thread):
     def __init__(self, q):
@@ -72,7 +72,7 @@ class Consumer(threading.Thread):
                 if price_curr == None:
                     continue
 
-                if hold_flag == False and wait_flag == False and \
+                if hold_flag == False and wait_flag == False and past_ma5 < curr_ma5 and \
                     price_curr >= price_buy and curr_ma5 >= curr_ma10 and \
                     curr_ma10 >= curr_ma15 and curr_ma15 >= curr_ma50 and \
                     curr_ma50 >= curr_ma120 and curr_ma15 <= curr_ma50 * 1.03:
@@ -122,7 +122,7 @@ class Consumer(threading.Thread):
                                 print("패닉셀 주문(-10%) 대기중...")
                                 time.sleep(0.5)
                     
-                    elif past_ma5 > curr_ma5:  # 하락장 전환시 손절 매도
+                    elif past_ma5 >= curr_ma5:  # 하락장 전환시 손절 매도
                         upbit.sell_market_order(self.ticker, volume)
                         while True:
                             volume = upbit.get_balance(self.ticker)
@@ -166,7 +166,7 @@ print(f'환영합니다 -- Upbit Auto Trading -- [{now.year}-{now.month}-{now.da
 print('트레이딩 대기중...')
 while True:
     now = datetime.datetime.now()
-    if now.second == 1:  # 대기 후 1초에 시작
+    if now.second == 3:  # 대기 후 3초에 시작
         q = queue.Queue()
         Producer(q).start()
         Consumer(q).start()
