@@ -56,7 +56,7 @@ def short_trading_for_1percent(df):
 
     # 1) 매수 일자 판별
     cond_0 = df['high'] >= df['open'] * 1.005  # 0.5% 상승시 매수
-    cond_1 = (ma15 >= ma50) & (ma15 <= ma50 * 1.03)
+    cond_1 = (ma15 >= ma50) & (ma50 >= ma120) & (ma15 <= ma50 * 1.03)
     cond_2 = (ma5 >= ma10) & (ma10 >= ma15)
     cond_buy = cond_0 & cond_1 & cond_2
 
