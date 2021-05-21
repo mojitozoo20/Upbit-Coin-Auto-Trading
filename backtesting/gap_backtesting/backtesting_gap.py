@@ -10,7 +10,7 @@ count_trading = 0  # 거래 횟수
 def get_ohlcv(ticker):
     dfs = [ ]
     # df = pyupbit.get_ohlcv(ticker, interval="minute1", to="20210423 11:00:00")
-    df = pyupbit.get_ohlcv(ticker, interval="minute1", to="20210520 23:00:00")
+    df = pyupbit.get_ohlcv(ticker, interval="minute1", to="20210521 23:00:00")
     dfs.append(df)
 
     for i in range(60):
@@ -85,8 +85,8 @@ def short_trading_for_1percent(df):
 
         if len(sell_candidate) == 0:  # 마지막 지점 브레이크
             sell_price = df.iloc[-1, 3]
-            if (sell_price / buy_price) <= 0.98:  #  하락시 손절가로 설정
-                acc_ror *= 0.977
+            if (sell_price / buy_price) <= 0.99:  #  하락시 손절가로 설정
+                acc_ror *= 0.987
                 count_stop_loss += 1
             else:
                 acc_ror *= (sell_price / buy_price)
@@ -104,9 +104,9 @@ def short_trading_for_1percent(df):
             if d == len(target.loc[ : sell_candidate[0] ]) - 1:
                 break
         
-        if (stop_loss / buy_price) <= 0.98:  # 2% 하락시 손절
+        if (stop_loss / buy_price) <= 0.99:  # 1% 하락시 손절
             sell_date = sell_candidate[0]
-            acc_ror *= 0.977
+            acc_ror *= 0.987
             count_stop_loss += 1
             ax_ror.append(sell_date)
             ay_ror.append(acc_ror)
@@ -115,8 +115,8 @@ def short_trading_for_1percent(df):
 
         if len(sell_candidate) == 0:
             sell_price = df.iloc[-1, 3]
-            if (sell_price / buy_price) <= 0.98:  # 2% 하락시 손절가 = 최종거래가
-                acc_ror *= 0.977
+            if (sell_price / buy_price) <= 0.99:  # 1% 하락시 손절가 = 최종거래가
+                acc_ror *= 0.987
                 count_stop_loss += 1
             else:
                 acc_ror *= (sell_price / buy_price)
@@ -138,14 +138,14 @@ def short_trading_for_1percent(df):
     return acc_ror
 
 '''
-for ticker in ["KRW-DOGE", "KRW-XRP", "KRW-ETC", "KRW-ONG", "KRW-SBD", "KRW-ETH", "KRW-BTC", "KRW-ADA", "KRW-EOS", "KRW-BTT", "KRW-GAS", "KRW-WAVES", "KRW-VET", "KRW-UPP"]:
+for ticker in ["KRW-UPP","KRW-ADA","KRW-DOGE"]:
     df = get_ohlcv(ticker)
     df.to_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx")
     print(f'{ticker} 엑셀 데이터 변환 완료..')
 '''
-for ticker in ["KRW-DOGE", "KRW-XRP", "KRW-ETC", "KRW-ONG", "KRW-SBD", "KRW-ETH", "KRW-BTC", "KRW-ADA", "KRW-EOS", "KRW-BTT", "KRW-GAS", "KRW-WAVES", "KRW-VET", "KRW-UPP"]:
+for ticker in ["KRW-UPP","KRW-ADA","KRW-DOGE"]:
 #for ticker in ["KRW-DOGE"]:
     df = pd.read_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx", index_col=0)
     ror = short_trading_for_1percent(df)
     period_profit = df.iloc[-1, 3] / df.iloc[0, 0]
-    print(ticker, f"초단타시 수익률: {ror:.2f} 단순 보유시 기간 수익률: {period_profit:.2f} 손절 횟수: {count_stop_loss} 거래 횟수: {count_trading}")
+    print(ticker, f"초단타시 수익률: {ror:.2f} 단순 보유시 기간 수익률: {period_profit:.2f} 손절 횟수: {count_stop_loss} 지정가 횟수: {count_trading}")

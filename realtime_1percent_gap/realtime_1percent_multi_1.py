@@ -5,7 +5,7 @@ import pyupbit
 import datetime
 from collections import deque
 TICKER = "KRW-DOGE"
-CASH = 95000
+CASH = 94000
 
 class Consumer(threading.Thread):
     def __init__(self, q):
@@ -115,7 +115,7 @@ class Consumer(threading.Thread):
                 if hold_flag == True:
                     uncomp = upbit.get_order(self.ticker)
 
-                    if (price_curr / price_buy) <= 0.98:  # 2% 하락시 손절 매도
+                    if (price_curr / price_buy) <= 0.99:  # 1% 하락시 손절 매도
                         while True:
                             upbit.cancel_order(uncomp[0]['uuid'])
                             if len(upbit.get_order(self.ticker)) == 0:
@@ -126,13 +126,13 @@ class Consumer(threading.Thread):
                         while True:
                             volume = upbit.get_balance(self.ticker)
                             if volume == 0:
-                                print("<< 손절 주문(-2%)이 완료되었습니다 >>")
+                                print("<< 손절 주문(-1%)이 완료되었습니다 >>")
                                 cash += (CASH * (price_curr / price_buy) * 0.9995)
                                 hold_flag = False
                                 wait_flag = True
                                 break
                             else:
-                                print("손절 주문(-2%) 대기중...")
+                                print("손절 주문(-1%) 대기중...")
                                 time.sleep(0.5)
                                 
                     elif uncomp != None and len(uncomp) == 0:
@@ -148,7 +148,7 @@ class Consumer(threading.Thread):
                 if i == (5 * 8):
                     print(f"[{datetime.datetime.now()}]")
                     print(f"{TICKER} 보유량:{upbit.get_balance_t(self.ticker)}, 보유KRW: {cash},  hold_flag= {hold_flag}, wait_flag= {wait_flag}, signal = {curr_ma5 >= curr_ma10 and curr_ma10 >= curr_ma15 and curr_ma15 >= curr_ma50 and curr_ma50 >= curr_ma120 and curr_ma15 <= curr_ma50 * 1.03}")
-                    print(f"현재: {price_curr}, 매수 목표: {int(price_buy)}, 지정 매도: {price_sell}, 손절 예상: {int(price_buy * 0.98)}, 누적 수익: {cash - CASH}")
+                    print(f"현재: {price_curr}, 매수 목표: {int(price_buy)}, 지정 매도: {price_sell}, 손절 예상: {int(price_buy * 0.99)}, 누적 수익: {cash - CASH}")
                     i = 0
                 i += 1
             except:
