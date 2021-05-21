@@ -32,7 +32,7 @@ class Consumer(threading.Thread):
         hold_flag = False  # 보유 여부
         wait_flag = False  # 대기 여부
         coin_profit = 0  # 수익률
-        past_ma5 = sum(self.ma5) / len(self.ma5)  # 지난 5봉 비교변수
+        past_ma5 = None  # 지난 5봉 비교변수
 
         with open("key/upbit_key.txt", "r") as f:
             access = f.readline().strip()
@@ -48,6 +48,7 @@ class Consumer(threading.Thread):
         while True:
             try:
                 if not self.q.empty():
+                    past_ma5 = sum(self.ma5) / len(self.ma5)
                     if price_curr != None:
                         self.ma5.append(price_curr)
                         self.ma10.append(price_curr)
@@ -121,7 +122,7 @@ class Consumer(threading.Thread):
                                 print("패닉셀 주문(-10%) 대기중...")
                                 time.sleep(0.5)
                     
-                    elif past_ma5 < curr_ma5:  # 하락장 전환시 손절 매도
+                    elif past_ma5 > curr_ma5:  # 하락장 전환시 손절 매도
                         upbit.sell_market_order(self.ticker, volume)
                         while True:
                             volume = upbit.get_balance(self.ticker)
@@ -136,10 +137,6 @@ class Consumer(threading.Thread):
                             else:
                                 print("손절 주문(하락장 전환) 대기중...")
                                 time.sleep(0.5)
-
-                if 58<= datetime.datetime.now().second <=59:  # 마감 직전 과거 5봉 갱신
-                    past_ma5 = curr_ma5
-                    time.sleep(2)
 
                 # 10 seconds
                 if i == (5 * 10):
