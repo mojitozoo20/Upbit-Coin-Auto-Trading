@@ -143,8 +143,8 @@ for ticker in ["KRW-DOGE", "KRW-XRP", "KRW-ETC", "KRW-ONG", "KRW-SBD", "KRW-ETH"
     df.to_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx")
     print(f'{ticker} 엑셀 데이터 변환 완료..')
 '''
-for ticker in ["KRW-DOGE", "KRW-XRP", "KRW-ETC", "KRW-ONG", "KRW-SBD", "KRW-ETH", "KRW-BTC", "KRW-ADA", "KRW-EOS", "KRW-BTT", "KRW-GAS", "KRW-WAVES", "KRW-VET", "KRW-UPP"]:
-#for ticker in ["KRW-BTC"]:
+#for ticker in ["KRW-DOGE", "KRW-XRP", "KRW-ETC", "KRW-ONG", "KRW-SBD", "KRW-ETH", "KRW-BTC", "KRW-ADA", "KRW-EOS", "KRW-BTT", "KRW-GAS", "KRW-WAVES", "KRW-VET", "KRW-UPP"]:
+for ticker in ["KRW-DOGE"]:
     df = pd.read_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx", index_col=0)
     ror = short_trading_for_1percent(df)
     period_profit = df.iloc[-1, 3] / df.iloc[0, 0]
