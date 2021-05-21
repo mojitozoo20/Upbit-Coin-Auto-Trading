@@ -85,8 +85,8 @@ def short_trading_for_1percent(df):
 
         if len(sell_candidate) == 0:  # 마지막 지점 브레이크
             sell_price = df.iloc[-1, 3]
-            if (sell_price / buy_price) <= 0.99:  #  하락시 손절가로 설정
-                acc_ror *= 0.987
+            if (sell_price / buy_price) <= 0.98:  #  하락시 손절가로 설정
+                acc_ror *= 0.977
                 count_stop_loss += 1
             else:
                 acc_ror *= (sell_price / buy_price)
@@ -104,9 +104,9 @@ def short_trading_for_1percent(df):
             if d == len(target.loc[ : sell_candidate[0] ]) - 1:
                 break
         
-        if (stop_loss / buy_price) <= 0.99:  # 1% 하락시 손절
+        if (stop_loss / buy_price) <= 0.98:  # 2% 하락시 손절
             sell_date = sell_candidate[0]
-            acc_ror *= 0.987
+            acc_ror *= 0.977
             count_stop_loss += 1
             ax_ror.append(sell_date)
             ay_ror.append(acc_ror)
@@ -115,8 +115,8 @@ def short_trading_for_1percent(df):
 
         if len(sell_candidate) == 0:
             sell_price = df.iloc[-1, 3]
-            if (sell_price / buy_price) <= 0.99:  # 1% 하락시 손절가 = 최종거래가
-                acc_ror *= 0.987
+            if (sell_price / buy_price) <= 0.98:  # 2% 하락시 손절가 = 최종거래가
+                acc_ror *= 0.977
                 count_stop_loss += 1
             else:
                 acc_ror *= (sell_price / buy_price)
