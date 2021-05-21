@@ -56,7 +56,7 @@ def short_trading_for_1percent(df):
 
     # 1) 매수 일자 판별
     cond_0 = df['high'] >= df['open'] * 1.005  # 0.5% 상승시 매수
-    cond_1 = (ma15 >= ma50) & (ma50 >= ma120) & (ma15 <= ma50 * 1.03)
+    cond_1 = (ma15 >= ma50) & (ma15 <= ma50 * 1.03)
     cond_2 = (ma5 >= ma10) & (ma10 >= ma15)
     cond_buy = cond_0 & cond_1 & cond_2
 
@@ -143,8 +143,8 @@ for ticker in ["KRW-DOGE", "KRW-XRP", "KRW-ETC", "KRW-ONG", "KRW-SBD", "KRW-ETH"
     df.to_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx")
     print(f'{ticker} 엑셀 데이터 변환 완료..')
 '''
-#for ticker in ["KRW-DOGE", "KRW-XRP", "KRW-ETC", "KRW-ONG", "KRW-SBD", "KRW-ETH", "KRW-BTC", "KRW-ADA", "KRW-EOS", "KRW-BTT", "KRW-GAS", "KRW-WAVES", "KRW-VET", "KRW-UPP"]:
-for ticker in ["KRW-DOGE"]:
+for ticker in ["KRW-DOGE", "KRW-XRP", "KRW-ETC", "KRW-ONG", "KRW-SBD", "KRW-ETH", "KRW-BTC", "KRW-ADA", "KRW-EOS", "KRW-BTT", "KRW-GAS", "KRW-WAVES", "KRW-VET", "KRW-UPP"]:
+#for ticker in ["KRW-DOGE"]:
     df = pd.read_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx", index_col=0)
     ror = short_trading_for_1percent(df)
     period_profit = df.iloc[-1, 3] / df.iloc[0, 0]
