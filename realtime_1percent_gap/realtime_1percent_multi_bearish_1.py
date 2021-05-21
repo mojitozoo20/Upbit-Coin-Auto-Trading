@@ -14,15 +14,15 @@ class Consumer(threading.Thread):
         self.ticker = TICKER
 
         self.ma5 = deque(maxlen=5)
-        self.ma10 = deque(maxlen=10)
-        self.ma15 = deque(maxlen=15)
+        #self.ma10 = deque(maxlen=10)
+        #self.ma15 = deque(maxlen=15)
         self.ma50 = deque(maxlen=50)
         self.ma120 = deque(maxlen=120)
 
         df = pyupbit.get_ohlcv(self.ticker, interval="minute1")
         self.ma5.extend(df['close'])
-        self.ma10.extend(df['close'])
-        self.ma15.extend(df['close'])
+        #self.ma10.extend(df['close'])
+        #self.ma15.extend(df['close'])
         self.ma50.extend(df['close'])
         self.ma120.extend(df['close'])
 
@@ -51,14 +51,14 @@ class Consumer(threading.Thread):
                     past_ma5 = sum(self.ma5) / len(self.ma5)
                     if price_curr != None:
                         self.ma5.append(price_curr)
-                        self.ma10.append(price_curr)
-                        self.ma15.append(price_curr)
+                        #self.ma10.append(price_curr)
+                        #self.ma15.append(price_curr)
                         self.ma50.append(price_curr)
                         self.ma120.append(price_curr)
 
                     curr_ma5 = sum(self.ma5) / len(self.ma5)
-                    curr_ma10 = sum(self.ma10) / len(self.ma10)
-                    curr_ma15 = sum(self.ma15) / len(self.ma15)
+                    #curr_ma10 = sum(self.ma10) / len(self.ma10)
+                    #curr_ma15 = sum(self.ma15) / len(self.ma15)
                     curr_ma50 = sum(self.ma50) / len(self.ma50)
                     curr_ma120 = sum(self.ma120) / len(self.ma120)
 
@@ -72,10 +72,8 @@ class Consumer(threading.Thread):
                 if price_curr == None:
                     continue
 
-                if hold_flag == False and wait_flag == False and past_ma5 < curr_ma5 and \
-                    price_curr >= price_buy and curr_ma5 >= curr_ma10 and \
-                    curr_ma10 >= curr_ma15 and curr_ma15 >= curr_ma50 and \
-                    curr_ma50 >= curr_ma120 and curr_ma15 <= curr_ma50 * 1.03:
+                if hold_flag == False and wait_flag == False and \
+                    price_curr >= price_buy and curr_ma50 >= curr_ma120 and past_ma5 < curr_ma5:
                     # 0.05%
                     while True:
                         ret = upbit.buy_market_order(self.ticker, cash * 0.9995)
@@ -141,8 +139,8 @@ class Consumer(threading.Thread):
                 # 10 seconds
                 if i == (5 * 10):
                     print(f"[{datetime.datetime.now()}]")
-                    print(f"{TICKER} 보유량:{upbit.get_balance_t(self.ticker)}, 보유KRW: {cash},  hold_flag= {hold_flag}, wait_flag= {wait_flag} signal = {curr_ma5 >= curr_ma10 and curr_ma10 >= curr_ma15 and curr_ma15 >= curr_ma50 and curr_ma50 >= curr_ma120 and curr_ma15 <= curr_ma50 * 1.03}")
-                    print(f"현재: {price_curr}, 매수 목표: {int(price_buy)}, 누적 수익률: {coin_profit}, 패닉셀 예상가: {int(price_buy * 0.9)}, past_ma5: {past_ma5:.2f}, curr_ma5: {curr_ma5:.2f}")
+                    print(f"{TICKER} 보유량:{upbit.get_balance_t(self.ticker)}, 보유KRW: {cash},  hold_flag= {hold_flag}, wait_flag= {wait_flag} signal = {curr_ma50 >= curr_ma120 and past_ma5 < curr_ma5}")
+                    print(f"현재: {price_curr}, 매수 목표: {int(price_buy)}, 누적 수익률: {coin_profit}, 패닉셀 예상가: {int(price_buy * 0.9)}, past_ma5: {past_ma5}, curr_ma5: {curr_ma5}")
                     i = 0
                 i += 1
             except:
@@ -166,7 +164,7 @@ print(f'환영합니다 -- Upbit Auto Trading -- [{now.year}-{now.month}-{now.da
 print('트레이딩 대기중...')
 while True:
     now = datetime.datetime.now()
-    if now.second == 3:  # 대기 후 3초에 시작
+    if now.second == 2:  # 대기 후 2초에 시작
         q = queue.Queue()
         Producer(q).start()
         Consumer(q).start()
