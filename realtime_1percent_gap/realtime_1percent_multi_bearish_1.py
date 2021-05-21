@@ -136,8 +136,8 @@ class Consumer(threading.Thread):
                                 print("손절 주문(하락장 전환) 대기중...")
                                 time.sleep(0.5)
 
-                # 10 seconds
-                if i == (5 * 10):
+                # 7 seconds
+                if i == (5 * 7):
                     print(f"[{datetime.datetime.now()}]")
                     print(f"{TICKER} 보유량:{upbit.get_balance_t(self.ticker)}, 보유KRW: {cash},  hold_flag= {hold_flag}, wait_flag= {wait_flag} signal = {curr_ma50 >= curr_ma120 and past_ma5 < curr_ma5}")
                     print(f"현재: {price_curr}, 매수 목표: {int(price_buy)}, 누적 수익률: {coin_profit}, 패닉셀 예상가: {int(price_buy * 0.9)}, past_ma5: {past_ma5}, curr_ma5: {curr_ma5}")
